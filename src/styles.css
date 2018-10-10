@@ -1,0 +1,29 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.menu .item {
+  font-family: monospace;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+}
+
+.menu .item i {
+  margin: 0px 5px !important;
+}
+
+.menu .item:first-child {
+  font-weight: bolder;
+}
+
+.menu .item:first-child i {
+  transition: 0.5s;
+}
+.menu .item:first-child:hover i {
+  transform: rotate(35deg);
+  transform-origin: 50% 50%;
+  color: mediumpurple;
+  transition: 1s;
+}

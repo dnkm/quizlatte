@@ -1,2 +1,0 @@
-# quizlatte
-Created with CodeSandbox
