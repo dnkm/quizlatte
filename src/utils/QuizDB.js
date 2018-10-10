@@ -1,4 +1,4 @@
-const DECKS = {
+let DECKS = {
   vocabulary1: [
     {
       front: "Viaduct",
@@ -78,5 +78,8 @@ export default class QuizDB {
   }
   static getDeck(deckname) {
     return DECKS[deckname];
+  }
+  static addDeck(deckname, deck) {
+    DECKS[deckname] = deck;
   }
 }

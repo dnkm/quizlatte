@@ -27,3 +27,11 @@
   color: mediumpurple;
   transition: 1s;
 }
+
+.cards {
+  justify-content: center;
+}
+
+.DeckViewer .cardContent {
+  padding: 40px 0;
+}
