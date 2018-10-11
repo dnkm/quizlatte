@@ -1,8 +1,46 @@
-import React from "react";
+import React from 'react';
 
-import { Card, Button, Label } from "semantic-ui-react";
-import QuizDB from "../utils/QuizDB";
-import DeckViewer from "./DeckViewer";
+import { Card, Button, Label, Form } from 'semantic-ui-react';
+import QuizDB from '../utils/QuizDB';
+import DeckViewer from './DeckViewer';
+
+class NewDeckForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: ''
+    };
+  }
+  render() {
+    return (
+      <Card>
+        <Card.Content>
+          <Card.Header>Add a new deck</Card.Header>
+          <Card.Description>
+            <Form
+              onSubmit={ev => {
+                ev.preventDefault();
+                this.props.addDeck(this.state.name);
+                this.setState({ name: '' });
+              }}>
+              <Form.Field
+                control={Form.Input}
+                placeholder="My Quizzes"
+                value={this.state.name}
+                onChange={ev => {
+                  this.setState({ name: ev.target.value });
+                }}
+              />
+              <Button color="green" type="submit">
+                ADD
+              </Button>
+            </Form>
+          </Card.Description>
+        </Card.Content>
+      </Card>
+    );
+  }
+}
 
 function Deck({ color, deckName, onSelect }) {
   return (
@@ -25,17 +63,28 @@ function Deck({ color, deckName, onSelect }) {
 }
 
 export default class Decks extends React.Component {
-  static COLORS = ["red", "purple", "blue", "orange", "green", "yellow"];
+  static COLORS = ['red', 'purple', 'blue', 'orange', 'green', 'yellow'];
   constructor() {
     super();
     this.state = {
-      decks: QuizDB.getDecks(),
+      decks: [],
       deckName: undefined
     };
     this.setDeckName = this.setDeckName.bind(this);
+    this.addDeck = this.addDeck.bind(this);
+  }
+  componentDidMount() {
+    this.loadDeck();
+  }
+  loadDeck() {
+    this.setState({ decks: QuizDB.getDecks() });
   }
   setDeckName(deckName) {
     this.setState({ deckName });
+  }
+  addDeck(deckName) {
+    QuizDB.addDeck(deckName);
+    this.loadDeck();
   }
   render() {
     if (this.state.deckName) {
@@ -57,6 +106,7 @@ export default class Decks extends React.Component {
             onSelect={() => this.setDeckName(deckName)}
           />
         ))}
+        <NewDeckForm addDeck={this.addDeck} />
       </Card.Group>
     );
   }

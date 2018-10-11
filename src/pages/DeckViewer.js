@@ -1,15 +1,75 @@
-import React from "react";
-import { Segment, Button } from "semantic-ui-react";
-import QuizDB from "../utils/QuizDB";
+import React from 'react';
+import { Segment, Button, Form } from 'semantic-ui-react';
+import QuizDB from '../utils/QuizDB';
+
+class AddCardForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      front: '',
+      back: ''
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+  handleChange(ev) {
+    this.setState({
+      [ev.target.name]: ev.target.value
+    });
+  }
+  onSubmit(ev) {
+    ev.preventDefault();
+    this.props.addCard(this.state.front, this.state.back);
+    this.setState({
+      front: '',
+      back: ''
+    });
+  }
+  render() {
+    return (
+      <Segment>
+        <h3>Add a new card</h3>
+        <Form onSubmit={this.onSubmit}>
+          <Form.Group widths="equal">
+            <Form.Input
+              label="Front"
+              value={this.state.front}
+              name="front"
+              onChange={this.handleChange}
+            />
+            <Form.Input
+              label="Back"
+              name="back"
+              value={this.state.back}
+              onChange={this.handleChange}
+            />
+          </Form.Group>
+          <Button type="submit">ADD</Button>
+        </Form>
+      </Segment>
+    );
+  }
+}
 
 export default class DeckViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cards: QuizDB.getDeck(this.props.deckName),
+      cards: [],
       page: 1,
       isFront: true
     };
+    this.addCard = this.addCard.bind(this);
+  }
+  componentDidMount() {
+    this.getCards();
+  }
+  getCards() {
+    this.setState({ cards: QuizDB.getDeck(this.props.deckName) });
+  }
+  addCard(front, back) {
+    QuizDB.addCard(this.props.deckName, front, back);
+    this.getCards();
   }
   render() {
     return (
@@ -19,7 +79,8 @@ export default class DeckViewer extends React.Component {
             primary
             onClick={() => {
               this.setState(state => ({
-                page: Math.max(state.page - 1, 1)
+                page: Math.max(state.page - 1, 1),
+                isFront: true
               }));
             }}>
             Prev
@@ -28,7 +89,8 @@ export default class DeckViewer extends React.Component {
             primary
             onClick={() => {
               this.setState(state => ({
-                page: Math.min(state.page + 1, this.state.cards.length)
+                page: Math.min(state.page + 1, this.state.cards.length),
+                isFront: true
               }));
             }}>
             Next
@@ -46,18 +108,26 @@ export default class DeckViewer extends React.Component {
         </Segment>
         <Segment attached stacked inverted={!this.state.isFront}>
           <div className="cardContent">
-            {this.state.isFront ? (
-              <h1>{this.state.cards[this.state.page - 1].front}</h1>
-            ) : (
-              <h3>{this.state.cards[this.state.page - 1].back}</h3>
-            )}
+            {this.state.cards.length === 0 && 'Empty'}
+            {this.state.cards.length > 0 &&
+              this.state.isFront && (
+                <h1>{this.state.cards[this.state.page - 1].front}</h1>
+              )}
+            {this.state.cards.length > 0 &&
+              !this.state.isFront && (
+                <h1>{this.state.cards[this.state.page - 1].back}</h1>
+              )}
           </div>
         </Segment>
-        <div style={{ marginTop: "30px" }}>
+        <div style={{ marginTop: '30px' }}>
           <Button primary onClick={this.props.onBacktoList}>
             Back to List
           </Button>
         </div>
+
+        <div style={{ height: '50px' }} />
+
+        <AddCardForm addCard={this.addCard} />
       </div>
     );
   }

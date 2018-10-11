@@ -26,10 +26,12 @@ class App extends React.Component {
             <Icon name="coffee" /> QUIZLATTE
           </Menu.Item>
           <Menu.Item onClick={() => this.setMenu("decks")}>Quiz List</Menu.Item>
+          {/*
           <Menu.Item onClick={() => this.setMenu("create")}>
             CREATE
             <Icon name="plus square outline" />
           </Menu.Item>
+          */}
         </Menu>
 
         <Container>
